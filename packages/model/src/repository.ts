@@ -1,6 +1,6 @@
 
 export interface WriteRepository<T> {
-    save(input: SaveInput<T>): Promise<void>;
+    save(input: SaveInput<T>): Promise<string>;
     delete(input: DeleteInput): Promise<void>;
 }
 

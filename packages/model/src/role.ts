@@ -19,7 +19,7 @@ export class MongoDBRoleWriteRepository implements WriteRepository<Role> {
         this.client = client;
     }
 
-    save(input: SaveInput<Role>): Promise<void> {
+    async save(input: SaveInput<Role>): Promise<string> {
         throw new Error("Method not implemented.");
     }
     delete(input: DeleteInput): Promise<void> {

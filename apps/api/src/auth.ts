@@ -20,4 +20,12 @@ export async function verifyToken(token: string): Promise<{ email: string, role:
         audience: 'yapple',
       })
     return { email: payload.sub!, role: payload.RoleType! as RoleType }   
-}   
+}
+
+export const requiredRoles = {
+    "POST:/users": RoleType.ADMIN,
+    "GET:/users": RoleType.ADMIN,
+    "GET:/users/:id": RoleType.ADMIN,
+    "PUT:/users/:id": RoleType.ADMIN,
+    "DELETE:/users/:id": RoleType.ADMIN,
+};

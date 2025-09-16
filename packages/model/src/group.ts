@@ -13,10 +13,12 @@ export class MongoDBGroupWriteRepository implements WriteRepository<Group> {
         this.client = client;
     }
 
-    save(input: SaveInput<Group>): Promise<void> {
-        throw new Error("Method not implemented.");
+    async save(input: SaveInput<Group>): Promise<string> {
+        const result = await this.client.db("core").collection("groups").insertOne(input.entity);
+        return result.insertedId.toString();
     }
-    delete(input: DeleteInput): Promise<void> {
+    
+    async delete(input: DeleteInput): Promise<void> {
         throw new Error("Method not implemented.");
     }
 }
