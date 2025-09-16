@@ -1,7 +1,7 @@
 import { MongoDBUserReadRepository, MongoDBUserWriteRepository, User } from "@repo/model";
 import { json, urlencoded } from "body-parser";
 import cors from "cors";
-import express, { type Express } from "express";
+import express, { type Express, Request, Response } from "express";
 import helmet from "helmet";
 import { MongoClient } from "mongodb";
 import morgan from "morgan";
@@ -69,7 +69,7 @@ export function createServer(params: CreateServerParams): Express {
     .get("/status", async (req, res) => {
       return res.json({ ok: true });
     })
-    .post("/users", async (req, res) => {
+    .post("/users", async (req: Request, res: Response) => {
       const { name, email } = req.body;
       const user = new User({ name, email, passwordHash: "" });
       try {

@@ -1,4 +1,3 @@
-import { log } from "@repo/logger";
 import { createMongoDBConnection } from "@repo/model";
 import * as dotenv from 'dotenv';
 import "reflect-metadata";
@@ -13,7 +12,7 @@ async function main() {
     const server = createServer({ port, client });
 
     server.listen(port, () => {
-        log(`api running on ${port}`);
+        console.log(`api running on ${port}`);
     });
 }
 

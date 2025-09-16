@@ -4,8 +4,8 @@ export interface WriteRepository<T> {
     delete(input: DeleteInput): Promise<void>;
 }
 
-export interface ReadRepository<T> {
-    find(input: FindInput): Promise<FindOutput<T>>;
+export interface ReadRepository<T, FilterT> {
+    find(input: FindInput<FilterT>): Promise<FindOutput<T>>;
 }
 
 export class DeleteInput {
@@ -16,10 +16,11 @@ export class SaveInput<T> {
     entity!: T;
 }
 
-export class FindInput {
-    id?: string;
+export class FindInput<FilterT> {
+    filter?: FilterT;
+    limit?: number;
 }
 
 export class FindOutput<T> {
-    entity?: T;
+    users?: T[];
 }
