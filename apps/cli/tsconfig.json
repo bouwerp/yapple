@@ -3,12 +3,9 @@
   "compilerOptions": {
     "lib": ["ESNext"],
     "outDir": "./dist",
-    "module": "ESNext", // or "NodeNext""
-    "target": "ESNext",
+    "module": "ESNext", // or "NodeNext"
     "moduleResolution": "Bundler", // or "NodeNext",
-    "noUncheckedIndexedAccess": true, // boosts type saftey
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
+    "noUncheckedIndexedAccess": true // boosts type saftey
   },
   "exclude": ["node_modules"],
   "include": ["."]

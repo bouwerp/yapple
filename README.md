@@ -1,8 +1,20 @@
-# Turborepo kitchen sink starter
+# Yapple - Global User Hierarchy 
 
-This Turborepo starter is maintained by the Turborepo core team.
+## Description
 
-This example also shows how to use [Workspace Configurations](https://turborepo.com/docs/core-concepts/monorepos/configuring-workspaces).
+Yapple is a global user hierarchy system for the secure management of users at national, urban and suburban level. The system consts of:
+1. Management Portal: A web application for securely querying and browsing users.
+2. CLI: A command line interface for securely managing users and their permissions.
+3. API: The REST API backing the management portal and the CLI.
+
+## To-do
+
+- [ ] UI Design for management portal
+- [ ] CLI Design
+- [ ] API Design
+- [ ] API Implementation
+- [ ] CLI Implementation
+- [ ] Management Portal Implementation
 
 ## Using this example
 
