@@ -17,7 +17,7 @@ export class AddUserOutput {
 }
 
 export class GetUsersInput {
-    groupId?: string;
+    groupId!: string;
 }
 
 export class GetUsersOutput {

@@ -44,6 +44,6 @@ export class MongoDBUserReadRepository extends MongoDBRepository implements Read
             .find(input.filter || {})
             .limit(input.limit || 10)
             .toArray();
-        return { users };
+        return { entities: users };
     }
 }

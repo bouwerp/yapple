@@ -1,16 +1,18 @@
 import { MongoDBUserReadRepository, MongoDBUserWriteRepository, User } from "@repo/model";
 import { AddUserInput, AddUserOutput, GetUserByEmailInput, GetUserByEmailOutput, GetUsersInput, GetUsersOutput, UserService } from "..";
 
-class V1UserService implements UserService {
+export class V1UserServiceDeps {
+    userReadRepository!: MongoDBUserReadRepository;
+    userWriteRepository!: MongoDBUserWriteRepository;
+}
+
+export class V1UserService implements UserService {
     private readonly userReadRepository: MongoDBUserReadRepository;
     private readonly userWriteRepository: MongoDBUserWriteRepository;
 
-    constructor(
-        userReadRepository: MongoDBUserReadRepository, 
-        userWriteRepository: MongoDBUserWriteRepository,
-    ) {
-        this.userReadRepository = userReadRepository;
-        this.userWriteRepository = userWriteRepository;
+    constructor(deps: V1UserServiceDeps) {
+        this.userReadRepository = deps.userReadRepository;
+        this.userWriteRepository = deps.userWriteRepository;
     }
 
     async addUser(input: AddUserInput): Promise<AddUserOutput> {
@@ -19,12 +21,12 @@ class V1UserService implements UserService {
     }
     
     async getUsers(input: GetUsersInput): Promise<GetUsersOutput> {
-        const output = await this.userReadRepository.find({ filter: {} })
-        return { users: output.users };
+        const output = await this.userReadRepository.find({ filter: {"roles.groupId": input.groupId } })
+        return { users: output.entities };
     }
 
     async getUserByEmail(input: GetUserByEmailInput): Promise<GetUserByEmailOutput> {
         const output = await this.userReadRepository.find({ filter: { email: input.email } })
-        return { user: output.users?.[0] };
+        return { user: output.entities && output.entities.length > 0 ? output.entities[0] : undefined };
     }
 }

@@ -22,5 +22,5 @@ export class FindInput<FilterT> {
 }
 
 export class FindOutput<T> {
-    users?: T[];
+    entities?: T[];
 }

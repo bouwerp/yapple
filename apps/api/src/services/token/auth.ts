@@ -15,7 +15,7 @@ export async function generateToken(email: string): Promise<string> {
 
 export async function verifyToken(token: string): Promise<{ email: string, role: RoleType }> {
     const secret = jose.base64url.decode(process.env.JWT_SECRET!)
-    const { payload, protectedHeader } = await jose.jwtDecrypt(token, secret, {
+    const { payload } = await jose.jwtDecrypt(token, secret, {
         issuer: 'yapple',
         audience: 'yapple',
       })
