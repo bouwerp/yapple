@@ -24,3 +24,7 @@ export class FindInput<FilterT> {
 export class FindOutput<T> {
     entities?: T[];
 }
+
+export type KVFilter = {
+    [key: string]: KVFilter | string;
+}

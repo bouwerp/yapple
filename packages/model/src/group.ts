@@ -3,8 +3,13 @@ import { MongoDBRepository } from "./mongodb";
 import { DeleteInput, FindInput, FindOutput, ReadRepository, SaveInput, WriteRepository } from "./repository";
 
 export class Group {
-  id!: string;
-  name!: string;
+    constructor(input: Group) {
+        this.id = input.id;
+        this.name = input.name;
+    }
+
+    id?: string;
+    name!: string;
 }
 
 export class MongoDBGroupWriteRepository extends MongoDBRepository implements WriteRepository<Group> {
