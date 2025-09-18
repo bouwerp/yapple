@@ -16,7 +16,7 @@ export class V1UserService implements UserService {
     }
 
     async addUser(input: AddUserInput): Promise<AddUserOutput> {
-        const user = new User({ name: input.name, email: input.email, passwordHash: input.passwordHash });
+        const user = new User({ name: input.name, email: input.email, passwordHash: input.passwordHash, roles: input.roles });
         return { id: await this.userWriteRepository.save({ entity: user }) };
     }
     

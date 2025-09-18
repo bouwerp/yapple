@@ -5,7 +5,6 @@ export enum RoleType {
 }
 
 export class Role {
-    name!: string;
     type!: RoleType;
     groupId!: string;
 }

@@ -107,7 +107,7 @@ export function createServer(params: CreateServerParams): Express {
     .post("/users", async (req: Request, res: Response) => {
       const { name, email } = req.body;
       try {
-        const id = await params.userService.addUser({ name, email, passwordHash: "" });
+        const id = await params.userService.addUser({ name, email, passwordHash: "", roles: [] });
         return res.json({ id });
       } catch (e) {
         return res.status(400).json({ error: (e as Error).message });

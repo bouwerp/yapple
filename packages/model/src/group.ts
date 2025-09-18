@@ -6,35 +6,44 @@ export class Group {
     constructor(input: Group) {
         this.id = input.id;
         this.name = input.name;
+        this.description = input.description;
     }
 
     id?: string;
     name!: string;
+    description?: string;
 }
 
-export class MongoDBGroupWriteRepository extends MongoDBRepository implements WriteRepository<Group> {
+export class MongoDBGroupWriteRepository 
+    extends MongoDBRepository<Group> 
+    implements WriteRepository<Group> {
+
     async save(input: SaveInput<Group>): Promise<string> {
-        const existingGroup = await this.db.collection<Group>(this.collection).findOne({ name: input.entity.name });
+        input.entity.id = undefined;
+        const existingGroup = await this.collection.findOne({ name: input.entity.name });
         if (existingGroup) {
             throw new Error("group already exists");
         }
-        const result = await this.db.collection<Group>(this.collection).insertOne(input.entity);
+        const result = await this.collection.insertOne(input.entity, {});
         return result.insertedId.toString();
     }
     
     async delete(input: DeleteInput): Promise<void> {
-        const existingGroup = await this.db.collection<Group>(this.collection).findOne({ id: input.id });
+        const existingGroup = await this.collection.findOne({ id: input.id });
         if (!existingGroup) {
             throw new Error("group not found");
         }
-        await this.db.collection<Group>(this.collection).deleteOne({ id: input.id });
+        await this.collection.deleteOne({ id: input.id });
     }
 }   
 
-export class MongoDBGroupReadRepository extends MongoDBRepository implements ReadRepository<Group, Filter<Group>> {
+export class MongoDBGroupReadRepository 
+    extends MongoDBRepository<Group> 
+    implements ReadRepository<Group, Filter<Group>> {
+
     async find(input: FindInput<Filter<Group>>): Promise<FindOutput<Group>> {
-        const groups = await this.db.collection<Group>(this.collection)
-            .find(input.filter || {})
+        const groups = await this.collection.find(input.filter || {}, 
+                {projection: {_id: 0, id: {$toString: "$_id"}, name: 1, description: 1}})
             .limit(input.limit || 10)
             .toArray();
         return { entities: groups };

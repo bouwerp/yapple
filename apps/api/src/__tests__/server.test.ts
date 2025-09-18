@@ -1,6 +1,6 @@
-import { describe } from "@jest/globals";
+// import { describe } from "@jest/globals";
 
-describe("Server", () => {
+// describe("Server", () => {
   // it("health check returns 200", async () => {
   //   await supertest(createServer())
   //     .get("/status")
@@ -18,4 +18,4 @@ describe("Server", () => {
   //       expect(res.body).toEqual({ message: "hello jared" });
   //     });
   // });
-});
+// });

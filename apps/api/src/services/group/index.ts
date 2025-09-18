@@ -6,6 +6,7 @@ import { Group } from "@repo/model";
 export interface GroupService {
     addGroup(input: AddGroupInput): Promise<AddGroupOutput>;
     getGroupById(input: GetGroupByIdInput): Promise<GetGroupByIdOutput>;
+    getGroupByName(input: GetGroupByNameInput): Promise<GetGroupByNameOutput>;
 }
 
 /**
@@ -39,3 +40,20 @@ export class GetGroupByIdInput {
 export class GetGroupByIdOutput {
     group?: Group;
 }
+
+/**
+ * Input for getGroupByName
+ * @property name - name of the group
+ */
+export class GetGroupByNameInput {
+    name!: string;
+}
+
+/**
+ * Output for getGroupByName
+ * @property group - group
+ */
+export class GetGroupByNameOutput {
+    group?: Group;
+}
+    

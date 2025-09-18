@@ -1,4 +1,4 @@
-import { User } from "@repo/model";
+import { Role, User } from "@repo/model";
 
 export interface UserService {
     addUser(input: AddUserInput): Promise<AddUserOutput>;
@@ -10,6 +10,7 @@ export class AddUserInput {
     name!: string;
     email!: string;
     passwordHash!: string;
+    roles!: Role[];
 }
 
 export class AddUserOutput {

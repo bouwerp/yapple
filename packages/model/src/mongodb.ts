@@ -1,12 +1,12 @@
-import { Db, MongoClient } from "mongodb";
+import { Collection, Db, Document, MongoClient } from "mongodb";
 
-export abstract class MongoDBRepository {
+export abstract class MongoDBRepository<T extends Document> {
     protected readonly db: Db;
-    protected readonly collection: string;
+    protected readonly collection: Collection<T>;
 
-    constructor(db: Db, collection: string) {
+    constructor(db: Db, collectionName: string) {
         this.db = db;
-        this.collection = collection;
+        this.collection = db.collection<T>(collectionName, { ignoreUndefined: true });
     }
 }
 
