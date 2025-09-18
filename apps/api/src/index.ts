@@ -26,7 +26,7 @@ async function main() {
     const passwordService = new V1PasswordService({saltRounds: Number(process.env.PASSWORD_SALT_ROUNDS!)});
     
     // do startup tasks: 
-    // TODO: create root group, if it doesn't exist;
+    // create root group, if it doesn't exist;
     let rootGroupID: string;
     try {
         const rootGroup = await groupService.getGroupByName({ name: "root" })
@@ -40,7 +40,7 @@ async function main() {
         console.error("failed to create root group: ", (e as Error).message);
     }
 
-    // TODO: create admin users, if they don't exist; 
+    // create admin users, if they don't exist; 
     const adminUsers = process.env.ADMIN_USERS?.split(/\w*,\w/)
     if (adminUsers === undefined || adminUsers.length === 0) {
         console.error("ADMIN_USERS is not set");
@@ -71,7 +71,7 @@ async function main() {
     }
 
     const port = Number(process.env.PORT || 5001);
-    const server = createServer({ port, client, userService, tokenService, passwordService });
+    const server = createServer({ port, client, userService, tokenService, passwordService, rootGroupID: rootGroupID! });
 
     server.listen(port, () => {
         console.log(`api running on ${port}`);

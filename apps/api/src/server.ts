@@ -1,21 +1,23 @@
 import { User } from "@repo/model";
 import { json, urlencoded } from "body-parser";
 import cors from "cors";
-import express, { type Express, Request, Response } from "express";
+import express, { type Express } from "express";
 import helmet from "helmet";
 import { MongoClient } from "mongodb";
 import morgan from "morgan";
+import { authMiddleware } from "./middleware/auth";
+import { addUser } from "./routes/addUser";
 import { PasswordService } from "./services/password";
 import { TokenService } from "./services/token";
-import { verifyToken } from "./services/token/auth";
 import { UserService } from "./services/user";
 
 export class CreateServerParams {
-    port: number = 5001;
-    client?: MongoClient;
-    userService!: UserService;
-    tokenService!: TokenService;
-    passwordService!: PasswordService;
+  client?: MongoClient;
+  userService!: UserService;
+  tokenService!: TokenService;
+  passwordService!: PasswordService;
+  port: number = 5001;
+  rootGroupID!: string;
 }
 
 export function createServer(params: CreateServerParams): Express {
@@ -76,43 +78,14 @@ export function createServer(params: CreateServerParams): Express {
       }
       return res.status(401).json({ error: "Unauthorized" });
    })
-    /* auth middleware */ // TODO: move to separate middleware
-    .use((req, res, next) => {
-      let token = req.headers.authorization;
-      if (!token) {
-        token = req.cookies?.token;
-      }
-      if (token) {
-        verifyToken(token)
-          .then(({email, role}) => {
-            console.log(email, role)
-            console.log(req.method, req.baseUrl, req.url, req.path)
-            // const requiredRole = requiredRoles[`${req.method}:${req.path}`]
-            next();
-          })
-          .catch((error) => {
-            console.log(error)
-            return res.status(401).json({ error: "Unauthorized" });
-          });
-      } else {
-        return res.status(401).json({ error: "Unauthorized" });
-      }
-    })
-    .get("/message/:name", (req, res) => {
-      return res.json({ message: `hello ${req.params.name}` });
-    })
+    .use(authMiddleware({tokenService: params.tokenService, userService: params.userService}))
     .get("/status", async (req, res) => {
       return res.json({ ok: true });
     })
-    .post("/users", async (req: Request, res: Response) => {
-      const { name, email } = req.body;
-      try {
-        const id = await params.userService.addUser({ name, email, passwordHash: "", roles: [] });
-        return res.json({ id });
-      } catch (e) {
-        return res.status(400).json({ error: (e as Error).message });
-      }
-    });
+    .post("/users", addUser({
+        userService: params.userService,
+        rootGroupID: params.rootGroupID
+    }));
 
   return app;
 };
