@@ -11,5 +11,6 @@
     "emitDecoratorMetadata": true,
   },
   "exclude": ["node_modules"],
-  "include": ["."]
+  "include": ["."],
+  "files": ["src/custom.d.ts"]
 }

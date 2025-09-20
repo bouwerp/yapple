@@ -15,6 +15,7 @@ export interface GroupService {
  */
 export class AddGroupInput {
     name!: string;
+    description?: string;
 }
 
 /**

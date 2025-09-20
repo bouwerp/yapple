@@ -16,7 +16,7 @@ export class V1GroupService implements GroupService {
     }
 
     async addGroup(input: AddGroupInput): Promise<AddGroupOutput> {
-        const group = new Group({ name: input.name });
+        const group = new Group({ name: input.name, description: input.description });
         return { id: await this.groupWriteRepository.save({ entity: group }) };
     }
     

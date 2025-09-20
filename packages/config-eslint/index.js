@@ -19,6 +19,7 @@ export const config = [
     },
     rules: {
       "turbo/no-undeclared-env-vars": "warn",
+      "max-len": ["error", { "code": 90 }],
     },
   },
   {

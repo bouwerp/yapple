@@ -10,9 +10,26 @@ export abstract class MongoDBRepository<T extends Document> {
     }
 }
 
-export async function createMongoDBConnection(): Promise<MongoClient> {
+export class CreateMongoDBConnectionParams {
+    constructor(params: CreateMongoDBConnectionParams) {
+        if (params.host === undefined) throw new Error("host is required");
+        if (params.port === undefined) throw new Error("port is required");
+
+        this.user = params.user;
+        this.password = params.password;
+        this.host = params.host;
+        this.port = params.port;
+    }
+
+    public readonly user?: string;
+    public readonly password?: string;
+    public readonly host?: string = "localhost";
+    public readonly port?: string = "27017";
+}
+
+export async function createMongoDBConnection(params: CreateMongoDBConnectionParams): Promise<MongoClient> {
     console.log("Connecting to MongoDB");
-    const url = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/admin`;
+    const url = `mongodb://${params.user !== undefined && params.password !== undefined ? `${params.user}:${params.password}@` : ""}${params.host}:${params.port}/admin`;
     const client = new MongoClient(url);
     try {
         await client.connect();

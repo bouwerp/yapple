@@ -1,4 +1,9 @@
 {
+  "globalEnv": [
+    "JWT_SECRET",
+    "PASSWORD_SALT_ROUNDS",
+    "ADMIN_USERS"
+  ],
   "extends": [
     "//"
   ],

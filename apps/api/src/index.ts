@@ -11,7 +11,12 @@ import { V1UserService } from "./services/user/impl/v1";
 dotenv.config();
 
 async function main() {
-    const client = await createMongoDBConnection();
+    const client = await createMongoDBConnection({
+        host: process.env.MONGO_HOST,
+        port: process.env.MONGO_PORT,
+        user: process.env.MONGO_USER,
+        password: process.env.MONGO_PASSWORD
+    });
 
     // init repositories
     const userReadRepository = new MongoDBUserReadRepository(client!.db("core"), "users");
@@ -21,7 +26,7 @@ async function main() {
 
     // init services
     const groupService = new V1GroupService({groupReadRepository, groupWriteRepository});
-    const userService = new V1UserService({userReadRepository, userWriteRepository});
+    const userService = new V1UserService({userReadRepository, userWriteRepository, groupReadRepository});
     const tokenService = new V1TokenService({jwtSecret: process.env.JWT_SECRET!});
     const passwordService = new V1PasswordService({saltRounds: Number(process.env.PASSWORD_SALT_ROUNDS!)});
     
@@ -71,7 +76,14 @@ async function main() {
     }
 
     const port = Number(process.env.PORT || 5001);
-    const server = createServer({ port, client, userService, tokenService, passwordService, rootGroupID: rootGroupID! });
+    const server = createServer({ 
+        port, 
+        client, 
+        userService, 
+        tokenService, 
+        passwordService, 
+        rootGroupID: rootGroupID!,
+     });
 
     server.listen(port, () => {
         console.log(`api running on ${port}`);
