@@ -17,7 +17,11 @@ export interface SignInRequest extends Request {
     };
 }
 
-export const signIn = (deps: SignInRouteDeps) => async (req: SignInRequest, res: Response) => {
+export interface SignInResponse extends Response {
+    token: string;
+}
+
+export const signIn = (deps: SignInRouteDeps) => async (req: SignInRequest, res: SignInResponse) => {
     const { email, password } = req.body;
     console.debug(email);
 

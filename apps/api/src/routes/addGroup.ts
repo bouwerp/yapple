@@ -14,7 +14,11 @@ export interface AddGroupRequest extends Request {
     };
 }
 
-export const addGroup = (deps: AddGroupRouteDeps) => async (req: AddGroupRequest, res: Response) => {
+export interface AddGroupResponse extends Response {
+    id: number;
+}
+
+export const addGroup = (deps: AddGroupRouteDeps) => async (req: AddGroupRequest, res: AddGroupResponse) => {
     const contextUser = req.data?.user;
     // only users with ADMIN in the root group can add users
     if (contextUser === undefined || contextUser.roles?.find(

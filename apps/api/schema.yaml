@@ -7,22 +7,19 @@ info:
 servers:
   - url: https://yapple.io/v1
 paths:
-  /pets:
-    get:
-      summary: List all pets
-      operationId: listPets
-      parameters:
-        - name: limit
-          in: query
-          description: How many items to return at one time (max 100)
-          required: false
-          schema:
-            type: integer
-            maximum: 100
-            format: int32
+  /sign-in:
+    post:
+      summary: Sign in
+      operationId: signIn
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignInRequest'
+        required: true
       responses:
         '200':
-          description: A paged array of pets
+          description: Success
           headers:
             x-next:
               description: A link to the next page of responses
@@ -31,23 +28,24 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Pets'
+                $ref: '#/components/schemas/SignInResponse'
         default:
           description: unexpected error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /users:
     post:
-      summary: Create a pet
-      operationId: createPets
+      summary: Create a user
+      operationId: createUser
       tags:
-        - pets
+        - users
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Pet'
+              $ref: '#/components/schemas/CreateUserRequest'
         required: true
       responses:
         '201':
@@ -58,12 +56,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /pets/{petId}:
+  /users/{userId}:
     get:
-      summary: Info for a specific pet
-      operationId: showPetById
+      summary: Info for a specific user
+      operationId: showUserById
       tags:
-        - pets
+        - users
       parameters:
         - name: petId
           in: path
@@ -77,7 +75,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Pet'
+                $ref: '#/components/schemas/User'
         default:
           description: unexpected error
           content:
@@ -86,7 +84,7 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    Pet:
+    User:
       type: object
       required:
         - id
