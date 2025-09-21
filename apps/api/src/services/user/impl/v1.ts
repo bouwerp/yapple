@@ -1,5 +1,5 @@
 import { Group, KVFilter, ReadRepository, User, WriteRepository } from "@repo/model";
-import { AddUserInput, AddUserOutput, GetUserByEmailInput, GetUserByEmailOutput, GetUsersInput, GetUsersOutput, UserService } from "..";
+import { AddUserInput, AddUserOutput, GetUserByEmailInput, GetUserByEmailOutput, GetUsersByGroupInput, GetUsersByGroupOutput, UserService } from "..";
 
 export class V1UserServiceDeps {
     userReadRepository!: ReadRepository<User, KVFilter>;
@@ -35,7 +35,7 @@ export class V1UserService implements UserService {
          }) }) };
     }
     
-    async getUsers(input: GetUsersInput): Promise<GetUsersOutput> {
+    async getUsersByGroup(input: GetUsersByGroupInput): Promise<GetUsersByGroupOutput> {
         const output = await this.userReadRepository.find({ filter: {"roles.groupId": input.groupId } })
         return { users: output.entities };
     }

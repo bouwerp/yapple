@@ -2,7 +2,7 @@ import { Role, User } from "@repo/model";
 
 export interface UserService {
     addUser(input: AddUserInput): Promise<AddUserOutput>;
-    getUsers(input: GetUsersInput): Promise<GetUsersOutput>;
+    getUsersByGroup(input: GetUsersByGroupInput): Promise<GetUsersByGroupOutput>;
     getUserByEmail(input: GetUserByEmailInput): Promise<GetUserByEmailOutput>;
 }
 
@@ -17,11 +17,11 @@ export class AddUserOutput {
     id!: string;
 }
 
-export class GetUsersInput {
+export class GetUsersByGroupInput {
     groupId!: string;
 }
 
-export class GetUsersOutput {
+export class GetUsersByGroupOutput {
     users?: User[];
 }
 

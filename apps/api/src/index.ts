@@ -82,6 +82,7 @@ async function main() {
         userService, 
         tokenService, 
         passwordService, 
+        groupService,
         rootGroupID: rootGroupID!,
      });
 

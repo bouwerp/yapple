@@ -7,6 +7,7 @@ export interface GroupService {
     addGroup(input: AddGroupInput): Promise<AddGroupOutput>;
     getGroupById(input: GetGroupByIdInput): Promise<GetGroupByIdOutput>;
     getGroupByName(input: GetGroupByNameInput): Promise<GetGroupByNameOutput>;
+    getGroupDescendants(input: GetGroupDescendantsInput): Promise<GetGroupDescendantsOutput>;
 }
 
 /**
@@ -58,3 +59,18 @@ export class GetGroupByNameOutput {
     group?: Group;
 }
     
+/**
+ * Input for getGroupDescendants
+ * @property id - id of the group
+ */
+export class GetGroupDescendantsInput {
+    id!: string;
+}
+
+/**
+ * Output for getGroupDescendants
+ * @property groups - groups
+ */
+export class GetGroupDescendantsOutput {
+    groups?: Group[];
+}
