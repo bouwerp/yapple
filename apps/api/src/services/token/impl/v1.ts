@@ -1,5 +1,4 @@
-import { RoleType } from '@repo/model';
-import * as jose from 'jose';
+import jwt from 'jsonwebtoken';
 import { GenerateTokenInput, GenerateTokenOutput, TokenService, VerifyTokenInput, VerifyTokenOutput } from "..";
 
 export class V1TokenServiceDeps {
@@ -14,24 +13,21 @@ export class V1TokenService implements TokenService {
     }
 
     async generateToken(input: GenerateTokenInput): Promise<GenerateTokenOutput> {
-        const secret = jose.base64url.decode(this.jwtSecret)
-        const token = await new jose.EncryptJWT({})
-          .setProtectedHeader({ alg: 'dir', enc: 'A128CBC-HS256' })
-          .setIssuedAt()
-          .setSubject(input.email)
-          .setIssuer('yapple')
-          .setAudience('yapple')
-          .setExpirationTime('2h')
-          .encrypt(secret)
+        const token = jwt.sign({}, this.jwtSecret, {
+            issuer: 'yapple',
+            audience: 'yapple',
+            expiresIn: '2h',
+            subject: input.email
+        })
         return { token }
     }
 
     async verifyToken(input: VerifyTokenInput): Promise<VerifyTokenOutput> {
-        const secret = jose.base64url.decode(this.jwtSecret)
-        const { payload } = await jose.jwtDecrypt(input.token, secret, {
+        const payload = jwt.verify(input.token, this.jwtSecret, {
             issuer: 'yapple',
             audience: 'yapple',
         })
-        return { email: payload.sub! as RoleType }  
+        console.log(payload);
+        return { email: payload.sub! as string }  
     }   
 }

@@ -13,6 +13,10 @@ export type GetUsersRequest = Request<unknown, unknown, unknown, { groupId: stri
 export type GetUsersResponse = Response<{ users?: User[]; error?: string; }>;
 
 export const getUsers = (deps: GetUsersRouteDeps) => async (req: GetUsersRequest, res: GetUsersResponse) => {
+    if (!req.query.groupId) {
+        return res.status(400).json({ error: "Missing groupId" });
+    }
+
     const contextUser = req.data?.user;
     for (const role of contextUser?.roles ?? []) {
         if (role.groupId === req.query.groupId) {
