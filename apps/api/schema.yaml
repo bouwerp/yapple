@@ -36,37 +36,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
   /users:
-    post:
-      summary: Create a user
-      operationId: createUser
-      tags:
-        - users
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateUserRequest'
-        required: true
-      responses:
-        '201':
-          description: Null response
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /users/{userId}:
     get:
-      summary: Info for a specific user
-      operationId: showUserById
+      summary: Get users
+      operationId: getUsers
       tags:
         - users
       parameters:
-        - name: petId
-          in: path
+        - name: groupId
+          in: query
           required: true
-          description: The id of the pet to retrieve
+          description: The id of the group for which to retrieve users
           schema:
             type: string
       responses:
@@ -75,7 +54,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/Users'
         default:
           description: unexpected error
           content:
@@ -84,6 +63,10 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
+    Users:
+      type: array
+      items:
+        $ref: '#/components/schemas/User'
     User:
       type: object
       required:
@@ -97,11 +80,6 @@ components:
           type: string
         tag:
           type: string
-    Pets:
-      type: array
-      maxItems: 100
-      items:
-        $ref: '#/components/schemas/Pet'
     Error:
       type: object
       required:

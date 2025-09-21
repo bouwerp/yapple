@@ -5,6 +5,7 @@ import helmet from "helmet";
 import { MongoClient } from "mongodb";
 import morgan from "morgan";
 import { authMiddleware } from "./middleware/auth";
+import { addGroup } from "./routes/addGroup";
 import { addUser } from "./routes/addUser";
 import { getUsers } from "./routes/getUsers";
 import { signIn } from "./routes/signIn";
@@ -46,6 +47,10 @@ export function createServer(params: CreateServerParams): Express {
     .post("/users", addUser({
         userService: params.userService,
         passwordService: params.passwordService,
+        rootGroupID: params.rootGroupID
+    }))
+    .post("/groups", addGroup({
+        groupService: params.groupService,
         rootGroupID: params.rootGroupID
     }))
     .get("/users?groupId=:groupId", getUsers({

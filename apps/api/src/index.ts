@@ -47,31 +47,28 @@ async function main() {
 
     // create admin users, if they don't exist; 
     const adminUsers = process.env.ADMIN_USERS?.split(/\w*,\w/)
-    if (adminUsers === undefined || adminUsers.length === 0) {
-        console.error("ADMIN_USERS is not set");
-        process.exit();
-    }
-
-    console.info("creating admin users:", adminUsers.join(", "));
-    for (const userCredentials of adminUsers) {
-        try {
-            const [email, password] = userCredentials.split(":");
-            const user = await userService.getUserByEmail({ email: email! });
-            if (user.user === undefined) {
-                const hashPasswordOutput = await passwordService.hashPassword({ password: password! });
-                await userService.addUser({ 
-                    email: email!, 
-                    passwordHash: hashPasswordOutput.hash!,
-                    roles: [{
-                        groupId: rootGroupID!,
-                        type: RoleType.ADMIN
-                    }],
-                 } as AddUserInput);
-            } else {
-                console.info("admin user already exists: ", email);
+    if (adminUsers !== undefined && adminUsers.length !== 0) {
+        console.info("creating admin users:", adminUsers.join(", "));
+        for (const userCredentials of adminUsers) {
+            try {
+                const [email, password] = userCredentials.split(":");
+                const user = await userService.getUserByEmail({ email: email! });
+                if (user.user === undefined) {
+                    const hashPasswordOutput = await passwordService.hashPassword({ password: password! });
+                    await userService.addUser({ 
+                        email: email!, 
+                        passwordHash: hashPasswordOutput.hash!,
+                        roles: [{
+                            groupId: rootGroupID!,
+                            type: RoleType.ADMIN
+                        }],
+                    } as AddUserInput);
+                } else {
+                    console.info("admin user already exists: ", email);
+                }
+            } catch (e) {
+                console.error("failed to create admin user: ", (e as Error).message);
             }
-        } catch (e) {
-            console.error("failed to create admin user: ", (e as Error).message);
         }
     }
 

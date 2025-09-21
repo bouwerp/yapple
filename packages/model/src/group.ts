@@ -1,4 +1,5 @@
 import { Filter } from "mongodb";
+import { convertIds } from "./helpers";
 import { MongoDBRepository } from "./mongodb";
 import { DeleteInput, FindInput, FindOutput, ReadRepository, SaveInput, WriteRepository } from "./repository";
 
@@ -48,8 +49,9 @@ export class MongoDBGroupReadRepository
     implements ReadRepository<Group, Filter<Group>> {
 
     async find(input: FindInput<Filter<Group>>): Promise<FindOutput<Group>> {
-        const groups = await this.collection.find(input.filter || {}, 
-                {projection: {_id: 0, id: {$toString: "$_id"}, name: 1, description: 1}})
+        const filter = convertIds<Group>(input.filter as Filter<Group>);
+        const groups = await this.collection.find(filter || {}, 
+                {projection: {_id: 0, id: {$toString: "$_id"}, name: 1, description: 1, parentId: 1}})
             .limit(input.limit || 10)
             .toArray();
         return { entities: groups };
