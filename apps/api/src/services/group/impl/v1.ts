@@ -21,7 +21,7 @@ export class V1GroupService implements GroupService {
     }
     
     async getGroupById(input: GetGroupByIdInput): Promise<GetGroupByIdOutput> {
-        const output = await this.groupReadRepository.find({ filter: { _id: input.id } })
+        const output = await this.groupReadRepository.find({ filter: { id: input.id } })
         return { group: output.entities && output.entities.length > 0 ? output.entities[0] : undefined };
     }
 
@@ -31,19 +31,21 @@ export class V1GroupService implements GroupService {
     }
 
     async getGroupDescendants(input: GetGroupDescendantsInput): Promise<GetGroupDescendantsOutput> {
-        const output = await this.doGetGroupDescendants(input.id);
-        return { groups: output };
+        const groups = await this.doGetGroupDescendants(input.id);
+        return { groups };
     }
 
     // doGetGroupDescendants is a recursive function that returns all descendants of a group
     async doGetGroupDescendants(groupId: string, n: number = 0): Promise<Group[]> {
         if (n > 10) {
-            throw new Error("Too many descendants");
+            throw new Error("Maximum recursion depth exceeded");
         }
         const output = await this.groupReadRepository.find({ filter: { parentId: groupId } })
-        const groups = output.entities ?? [];
-        for (const group of groups) {
-            groups.push(...await this.doGetGroupDescendants(group.id!, n + 1));
+        const groups = [...(output.entities ?? [])];
+        if (output.entities && output.entities?.length > 0) {
+            for (const group of output.entities) {
+                groups.push(...await this.doGetGroupDescendants(group.id!, n + 1));
+            }
         }
         return groups;
     }
