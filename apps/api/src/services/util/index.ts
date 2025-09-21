@@ -1,10 +1,12 @@
 import { RoleType } from "@repo/model";
 import { GroupService } from "../group";
+import { PasswordService } from "../password";
 import { UserService } from "../user";
 
 export interface CreateTestDataDeps {
     groupService: GroupService;
     userService: UserService;
+    passwordService: PasswordService;
 }
 
 /**
@@ -38,20 +40,38 @@ export const createTestData = (deps: CreateTestDataDeps) => async () => {
     }
 
     // groups
-    const southAfricaGroupOutput = await deps.groupService.addGroup({ name: "South Africa", parentId: rootGroup.group.id });
-    const johannesburgGroupOutput = await deps.groupService.addGroup({ name: "Johannesburg", parentId: southAfricaGroupOutput.id });
-    const capeTownGroupOutput = await deps.groupService.addGroup({ name: "Cape Town", parentId: southAfricaGroupOutput.id });
-    const northcliffGroupOutput = await deps.groupService.addGroup({ name: "Northcliff", parentId: johannesburgGroupOutput.id });
-    const parkviewGroupOutput = await deps.groupService.addGroup({ name: "Parkview", parentId: johannesburgGroupOutput.id });
-    const seaPointGroupOutput = await deps.groupService.addGroup({ name: "Sea Point", parentId: capeTownGroupOutput.id });
-    const muizenbergGroupOutput = await deps.groupService.addGroup({ name: "Muizenberg", parentId: capeTownGroupOutput.id });
+    console.log("creating test groups");
+    const southAfricaGroupID = await getOrCreateGroup(deps, "South Africa", rootGroup.group.id!);
+    const johannesburgGroupID = await getOrCreateGroup(deps, "Johannesburg", southAfricaGroupID);
+    const capeTownGroupID = await getOrCreateGroup(deps, "Cape Town", southAfricaGroupID);
+    const northcliffGroupID = await getOrCreateGroup(deps, "Northcliff", johannesburgGroupID);
+    const parkviewGroupID = await getOrCreateGroup(deps, "Parkview", johannesburgGroupID);
+    const seaPointGroupID = await getOrCreateGroup(deps, "Sea Point", capeTownGroupID);
+    const muizenbergGroupID = await getOrCreateGroup(deps, "Muizenberg", capeTownGroupID);
 
     // users
-    await deps.userService.addUser({ name: "User 0", email: "user0@example.com", passwordHash: "password0", roles: [{ groupId: southAfricaGroupOutput.id, type: RoleType.USER }] });
-    await deps.userService.addUser({ name: "User 1", email: "user1@example.com", passwordHash: "password1", roles: [{ groupId: johannesburgGroupOutput.id, type: RoleType.USER }] });
-    await deps.userService.addUser({ name: "User 2", email: "user2@example.com", passwordHash: "password2", roles: [{ groupId: capeTownGroupOutput.id, type: RoleType.USER }] });
-    await deps.userService.addUser({ name: "User 3", email: "user3@example.com", passwordHash: "password3", roles: [{ groupId: northcliffGroupOutput.id, type: RoleType.USER }] });
-    await deps.userService.addUser({ name: "User 4", email: "user4@example.com", passwordHash: "password4", roles: [{ groupId: parkviewGroupOutput.id, type: RoleType.USER }] });
-    await deps.userService.addUser({ name: "User 5", email: "user5@example.com", passwordHash: "password5", roles: [{ groupId: seaPointGroupOutput.id, type: RoleType.USER }] });
-    await deps.userService.addUser({ name: "User 6", email: "user6@example.com", passwordHash: "password6", roles: [{ groupId: muizenbergGroupOutput.id, type: RoleType.USER }] });
+    console.log("creating test users");
+    await getOrCreateUser(deps, "User 0", "user0@example.com", "password0", southAfricaGroupID);
+    await getOrCreateUser(deps, "User 1", "user1@example.com", "password1", johannesburgGroupID);
+    await getOrCreateUser(deps, "User 2", "user2@example.com", "password2", capeTownGroupID);
+    await getOrCreateUser(deps, "User 3", "user3@example.com", "password3", northcliffGroupID);
+    await getOrCreateUser(deps, "User 4", "user4@example.com", "password4", parkviewGroupID);
+    await getOrCreateUser(deps, "User 5", "user5@example.com", "password5", seaPointGroupID);
+    await getOrCreateUser(deps, "User 6", "user6@example.com", "password6", muizenbergGroupID);
+}
+
+const getOrCreateGroup = async (deps: CreateTestDataDeps, name: string, parentId: string): Promise<string> => {
+    const output = await deps.groupService.getGroupByName({ name });
+    if (output.group === undefined) {
+        return (await deps.groupService.addGroup({ name, parentId })).id;
+    }
+    return output.group.id!;
+}
+
+const getOrCreateUser = async (deps: CreateTestDataDeps, name: string, email: string, password: string, groupId: string): Promise<void> => {
+    const output = await deps.userService.getUserByEmail({ email });
+    if (output.user === undefined) {
+        const passwordHash = (await deps.passwordService.hashPassword({ password })).hash;
+        await deps.userService.addUser({ name, email, passwordHash, roles: [{ groupId, type: RoleType.USER }] });
+    }
 }

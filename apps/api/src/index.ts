@@ -74,7 +74,7 @@ async function main() {
     }
 
     // create test data
-    await createTestData({ groupService, userService })();
+    await createTestData({ groupService, userService, passwordService })();
 
     const port = Number(process.env.PORT || 5001);
     const server = createServer({ 

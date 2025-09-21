@@ -36,7 +36,7 @@ export const signIn = (deps: SignInRouteDeps) => async (
       console.log(e);
       return res.status(401).json({ error: "Unauthorized" });
     }
-    console.log(user);
+    console.log("SIGN IN USER: ", user);
 
     // check if password matches
     let isMatch = false;
