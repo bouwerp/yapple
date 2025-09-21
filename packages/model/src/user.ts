@@ -1,3 +1,4 @@
+import { convertIds } from "./helpers";
 import { MongoDBRepository } from "./mongodb";
 import { DeleteInput, FindInput, FindOutput, KVFilter, ReadRepository, SaveInput, WriteRepository } from "./repository";
 import { Role } from "./role";
@@ -39,7 +40,8 @@ export class MongoDBUserWriteRepository extends MongoDBRepository<User> implemen
 }
 export class MongoDBUserReadRepository extends MongoDBRepository<User> implements ReadRepository<User, KVFilter> {
     async find(input: FindInput<KVFilter>): Promise<FindOutput<User>> {
-        const users = await this.collection.find(input.filter || {})
+        const filter = convertIds<User>(input.filter as KVFilter);
+        const users = await this.collection.find(filter || {})
             .limit(input.limit || 10)
             .toArray();
         return { entities: users };

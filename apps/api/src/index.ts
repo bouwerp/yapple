@@ -7,6 +7,7 @@ import { V1PasswordService } from "./services/password/impl/v1";
 import { V1TokenService } from "./services/token/impl/v1";
 import { AddUserInput } from "./services/user";
 import { V1UserService } from "./services/user/impl/v1";
+import { createTestData } from "./services/util";
 
 dotenv.config();
 
@@ -71,6 +72,9 @@ async function main() {
             }
         }
     }
+
+    // create test data
+    await createTestData({ groupService, userService })();
 
     const port = Number(process.env.PORT || 5001);
     const server = createServer({ 
