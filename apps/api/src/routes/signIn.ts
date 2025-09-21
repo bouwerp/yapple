@@ -4,24 +4,26 @@ import { PasswordService } from "../services/password";
 import { TokenService } from "../services/token";
 import { UserService } from "../services/user";
 
-export class SignInRouteDeps {
-    userService!: UserService;
-    passwordService!: PasswordService;
-    tokenService!: TokenService;
+export interface SignInRouteDeps {
+    userService: UserService;
+    passwordService: PasswordService;
+    tokenService: TokenService;
 }
 
-export interface SignInRequest extends Request {
-    body: {
+export type SignInRequest = Request<
+    {
         email: string;
         password: string;
-    };
-}
+    }
+>;
 
-export interface SignInResponse extends Response {
-    token: string;
-}
+export type SignInResponse = Response<{
+    token?: string;
+    error?: string;
+}>;
 
-export const signIn = (deps: SignInRouteDeps) => async (req: SignInRequest, res: SignInResponse) => {
+export const signIn = (deps: SignInRouteDeps) => async (
+  req: SignInRequest, res: SignInResponse) => {
     const { email, password } = req.body;
     console.debug(email);
 
@@ -52,14 +54,14 @@ export const signIn = (deps: SignInRouteDeps) => async (req: SignInRequest, res:
     
     if (isMatch) {
       try {
-        const token = await deps.tokenService.generateToken({ email });
-        res.cookie("token", token, {
+        const generateTokenOutput = await deps.tokenService.generateToken({ email });
+        res.cookie("token", generateTokenOutput.token, {
           httpOnly: true,
           // secure: true, // TODO: conditionally add for deployed environment
           sameSite: "strict",
           maxAge: 60 * 60 * 24 * 7,
         });
-        return res.json({ token });
+        return res.json({ token: generateTokenOutput.token });
       } catch (e) {
         console.log(e);
         return res.status(401).json({ error: "Unauthorized" });

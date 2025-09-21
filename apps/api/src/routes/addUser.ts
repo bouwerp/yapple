@@ -9,18 +9,19 @@ export class AddUserRouteDeps {
     rootGroupID!: string;
 }
 
-export interface AddUserRequest extends Request {
-    body: {
+export type AddUserRequest = Request<
+    {
         name: string;
         email: string;
         password: string;
         roles: Role[];
-    };
-}
+    }
+>;
 
-export interface AddUserResponse extends Response {
-    id: number;
-}
+export type AddUserResponse = Response<{
+    id?: string;
+    error?: string;
+}>;
 
 export const addUser = (deps: AddUserRouteDeps) => async (req: AddUserRequest, res: AddUserResponse) => {
     const contextUser = req.data?.user;
@@ -34,8 +35,8 @@ export const addUser = (deps: AddUserRouteDeps) => async (req: AddUserRequest, r
     const { name, email, password, roles } = req.body;
     try {
         const hashPasswordOutput = await deps.passwordService.hashPassword({ password });
-        const id = await deps.userService.addUser({ name, email, passwordHash: hashPasswordOutput.hash!, roles });
-        return res.json({ id });
+        const addUserOutput = await deps.userService.addUser({ name, email, passwordHash: hashPasswordOutput.hash!, roles });
+        return res.json({ id: addUserOutput.id });
     } catch (e) {
         return res.status(400).json({ error: (e as Error).message });
     }

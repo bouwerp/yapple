@@ -10,10 +10,8 @@ Yapple is a global user hierarchy system for the secure management of users at n
 ## To-do
 
 - [ ] UI Design for management portal
-- [ ] CLI Design
 - [ ] API Design
 - [ ] API Implementation
-- [ ] CLI Implementation
 - [ ] Management Portal Implementation
 
 ## Using this example
