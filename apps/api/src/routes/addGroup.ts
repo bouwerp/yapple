@@ -9,6 +9,7 @@ export class AddGroupRouteDeps {
 
 export interface AddGroupRequest extends Request {
     body: {
+        parentId?: string;
         name: string;
         description: string;
     };
@@ -27,9 +28,9 @@ export const addGroup = (deps: AddGroupRouteDeps) => async (req: AddGroupRequest
         return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const { name, description } = req.body;
+    const { name, description, parentId } = req.body;
     try {
-        const id = await deps.groupService.addGroup({ name, description });
+        const id = await deps.groupService.addGroup({ name, description, parentId });
         return res.json({ id });
     } catch (e) {
         return res.status(400).json({ error: (e as Error).message });

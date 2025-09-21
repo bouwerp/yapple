@@ -8,18 +8,18 @@ export class GetUsersRouteDeps {
     groupService!: GroupService;
 }
 
-export type GetUsersRequest = Request<{ groupId: string; }>;
+export type GetUsersRequest = Request<unknown, unknown, unknown, { groupId: string; }>;
 
 export type GetUsersResponse = Response<{ users?: User[]; error?: string; }>;
 
 export const getUsers = (deps: GetUsersRouteDeps) => async (req: GetUsersRequest, res: GetUsersResponse) => {
     const contextUser = req.data?.user;
     for (const role of contextUser?.roles ?? []) {
-        if (role.groupId === req.params.groupId) {
+        if (role.groupId === req.query.groupId) {
             break;
         } else {
             const getGroupDescendantsOutput = await deps.groupService.getGroupDescendants({ id: role.groupId });
-            if (getGroupDescendantsOutput?.groups?.find((group) => group.id === req.params.groupId)) {
+            if (getGroupDescendantsOutput?.groups?.find((group) => group.id === req.query.groupId)) {
                 break;
             }
         }
@@ -27,6 +27,6 @@ export const getUsers = (deps: GetUsersRouteDeps) => async (req: GetUsersRequest
     }
 
     const { userService } = deps;
-    const output = await userService.getUsersByGroup({ groupId: req.params.groupId });
+    const output = await userService.getUsersByGroup({ groupId: req.query.groupId });
     res.json({ users: output?.users ?? [] });
 };

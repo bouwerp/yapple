@@ -7,9 +7,11 @@ export class Group {
         this.id = input.id;
         this.name = input.name;
         this.description = input.description;
+        this.parentId = input.parentId;
     }
 
     id?: string;
+    parentId?: string;
     name!: string;
     description?: string;
 }
@@ -20,7 +22,11 @@ export class MongoDBGroupWriteRepository
 
     async save(input: SaveInput<Group>): Promise<string> {
         input.entity.id = undefined;
-        const existingGroup = await this.collection.findOne({ name: input.entity.name });
+        const existingGroup = await this.collection.findOne({ 
+            name: input.entity.name, 
+            description: input.entity.description,
+            parentId: input.entity.parentId,
+         });
         if (existingGroup) {
             throw new Error("group already exists");
         }

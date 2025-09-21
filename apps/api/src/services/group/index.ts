@@ -13,10 +13,13 @@ export interface GroupService {
 /**
  * Input for addGroup
  * @property name - name of the group
+ * @property description - description of the group
+ * @property parentId - id of the parent group
  */
 export class AddGroupInput {
     name!: string;
     description?: string;
+    parentId?: string;
 }
 
 /**

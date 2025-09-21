@@ -48,7 +48,7 @@ export function createServer(params: CreateServerParams): Express {
         passwordService: params.passwordService,
         rootGroupID: params.rootGroupID
     }))
-    .get("/users/:groupId", getUsers({
+    .get("/users?groupId=:groupId", getUsers({
         userService: params.userService,
         groupService: params.groupService
     }));
