@@ -26,7 +26,7 @@
     "dev": "bunchee --watch",
     "lint": "eslint src/",
     "check-types": "tsc --noEmit",
-    "test": "jest --detectOpenHandles --forceExit"
+    "test": "jest --detectOpenHandles --forceExit --coverage"
   },
   "jest": {
     "preset": "@repo/jest-presets/node"

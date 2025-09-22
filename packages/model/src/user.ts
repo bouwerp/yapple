@@ -1,6 +1,6 @@
 import { convertIds } from "./helpers";
 import { MongoDBRepository } from "./mongodb";
-import { DeleteInput, FindInput, FindOutput, KVFilter, ReadRepository, SaveInput, WriteRepository } from "./repository";
+import { FindInput, FindOutput, KVFilter, ReadRepository, SaveInput, WriteRepository } from "./repository";
 import { Role } from "./role";
 
 export class User {
@@ -28,14 +28,6 @@ export class MongoDBUserWriteRepository extends MongoDBRepository<User> implemen
         }
         const result = await this.collection.insertOne(input.entity);
         return result.insertedId.toString();
-    }
-
-    async delete(input: DeleteInput): Promise<void> {
-        const existingUser = await this.collection.findOne({ email: input.id });
-        if (!existingUser) {
-            throw new Error("User not found");
-        }
-        await this.collection.deleteOne({ email: input.id });
     }
 }
 export class MongoDBUserReadRepository extends MongoDBRepository<User> implements ReadRepository<User, KVFilter> {

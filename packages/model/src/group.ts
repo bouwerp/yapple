@@ -1,7 +1,7 @@
 import { Filter } from "mongodb";
 import { convertIds } from "./helpers";
 import { MongoDBRepository } from "./mongodb";
-import { DeleteInput, FindInput, FindOutput, ReadRepository, SaveInput, WriteRepository } from "./repository";
+import { FindInput, FindOutput, ReadRepository, SaveInput, WriteRepository } from "./repository";
 
 export class Group {
     constructor(input: Group) {
@@ -20,7 +20,6 @@ export class Group {
 export class MongoDBGroupWriteRepository 
     extends MongoDBRepository<Group> 
     implements WriteRepository<Group> {
-
     async save(input: SaveInput<Group>): Promise<string> {
         input.entity.id = undefined;
         const existingGroup = await this.collection.findOne({ 
@@ -33,14 +32,6 @@ export class MongoDBGroupWriteRepository
         }
         const result = await this.collection.insertOne(input.entity, {});
         return result.insertedId.toString();
-    }
-    
-    async delete(input: DeleteInput): Promise<void> {
-        const existingGroup = await this.collection.findOne({ id: input.id });
-        if (!existingGroup) {
-            throw new Error("group not found");
-        }
-        await this.collection.deleteOne({ id: input.id });
     }
 }   
 
