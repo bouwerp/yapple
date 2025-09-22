@@ -10,7 +10,7 @@ const config = {
     "<rootDir>/node_modules",
     "<rootDir>/dist",
   ],
-  preset: "ts-jest",
+  preset: "ts-jest"
 };
 
 export default config;
