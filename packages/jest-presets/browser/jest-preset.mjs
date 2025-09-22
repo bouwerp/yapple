@@ -3,7 +3,7 @@ const config = {
   roots: ["<rootDir>"],
   testEnvironment: "jsdom",
   transform: {
-    "^.+\\.tsx?$": "ts-jest",
+    "^.+\\.ts?$": "ts-jest",
   },
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   modulePathIgnorePatterns: [
