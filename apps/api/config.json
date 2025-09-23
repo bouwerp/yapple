@@ -1,0 +1,11 @@
+{
+    "CloudConfig": {
+        "Zone": "eu-west-2",
+        "BucketName": "yapple-images"
+    },
+    "RunConfig": {
+        "Ports": [
+            "5001"
+        ]
+    }
+}
